@@ -158,10 +158,8 @@ PlasmoidItem {
 
             Repeater {
                 model: [
-                    i18n("Around 50% is best when the laptop is always plugged in, 80% for daily use, and 100% only when you need the range, like before a trip."),
                     i18n("If a new limit doesn't take effect, unplug the charger and plug it back in."),
-                    i18n("A lower limit doesn't drain the battery. It only stops charging, and charging starts again once the battery is a little below the limit."),
-                    i18n("Rarely change the limit? Right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Show only in popup</b>."),
+                    i18n("Right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Show only in popup</b>."),
                 ]
 
                 PlasmaComponents3.Label {
