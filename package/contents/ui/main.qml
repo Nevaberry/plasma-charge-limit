@@ -41,7 +41,7 @@ PlasmoidItem {
     switchWidth: Kirigami.Units.gridUnit * 12
     switchHeight: Kirigami.Units.gridUnit * 6
 
-    onExpandedChanged: if (expanded) refresh()
+    onExpandedChanged: if (root.expanded) root.refresh()
 
     compactRepresentation: MouseArea {
         property bool wasExpanded

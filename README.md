@@ -13,7 +13,7 @@ git clone https://github.com/Nevaberry/plasma-charge-limit
 kpackagetool6 --type Plasma/Applet --install plasma-charge-limit/package
 ```
 
-Then add it to your panel: right-click the panel, choose **Add Widgets…**, then **Charge Limit**. Or add it to the system tray: **Configure System Tray…**, then **Entries**, then set **Charge Limit** to **Shown when relevant**.
+Then add it to your panel: right-click the panel, choose **Add Widgets…**, then **Charge Limit**. Or put it in the system tray: right-click the tray's arrow, choose **Configure System Tray...**, and under **Entries** set **Charge Limit** to **Show only in popup** to keep it behind the arrow, or **Always show**.
 
 The first time you pick a limit, Plasma asks for your password once. The widget then installs two small files so later changes need no password:
 
