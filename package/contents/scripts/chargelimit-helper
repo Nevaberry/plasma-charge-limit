@@ -1,0 +1,133 @@
+#!/bin/bash
+# SPDX-FileCopyrightText: 2026 Antti Jalomäki
+# SPDX-License-Identifier: MIT
+#
+# Helper for the Charge Limit Plasma widget: https://github.com/Nevaberry/plasma-charge-limit
+#
+#   chargelimit-helper status           Print the current charge limit (no root needed)
+#   chargelimit-helper set LIMIT        Set the charge limit, 20-100 (root)
+#   chargelimit-helper install [LIMIT]  One-time setup so that `set` needs no password,
+#                                       then set LIMIT if given (root)
+set -euo pipefail
+
+readonly INSTALLED=/usr/local/libexec/plasma-charge-limit-helper
+readonly RULE=/etc/polkit-1/rules.d/50-plasma-charge-limit.rules
+readonly GAP=5 # charging starts again this many percent below the limit
+
+sysfs=/sys/class/power_supply
+if [[ $EUID -ne 0 && -n ${CHARGE_LIMIT_SYSFS:-} ]]; then
+    sysfs=$CHARGE_LIMIT_SYSFS # fake tree for tests, never used as root
+fi
+
+die() {
+    echo "$*" >&2
+    exit 1
+}
+
+# Prints a sysfs attribute, or nothing if it can't be read.
+attr() {
+    local value=
+    read -r value 2>/dev/null <"$1" || true
+    printf '%s' "$value"
+}
+
+# Prints the batteries that have a charge limit, skipping peripherals like mice.
+batteries() {
+    local dir
+    for dir in "$sysfs"/*; do
+        if [[ -f $dir/charge_control_end_threshold && $(attr "$dir/type") == Battery &&
+            $(attr "$dir/scope") != Device ]]; then
+            printf '%s\n' "$dir"
+        fi
+    done
+}
+
+# Writes a value to a sysfs file, failing with the kernel's reason, e.g. "Invalid argument".
+write() {
+    local err
+    if ! err=$({ printf '%s' "$2" >"$1"; } 2>&1); then
+        die "Could not set ${1##*/} to $2: ${err##*: }"
+    fi
+}
+
+cmd_status() {
+    local dirs
+    mapfile -t dirs < <(batteries)
+    if [[ ! -f $INSTALLED ]]; then
+        echo helper=setup
+    elif [[ $(<"$INSTALLED") == "$(<"${BASH_SOURCE[0]}")" ]]; then
+        echo helper=ready
+    else
+        echo helper=outdated
+    fi
+    if ((${#dirs[@]})); then
+        echo "limit=$(attr "${dirs[0]}/charge_control_end_threshold")"
+        echo "capacity=$(attr "${dirs[0]}/capacity")"
+        echo "state=$(attr "${dirs[0]}/status")"
+    fi
+}
+
+cmd_set() {
+    local limit=$1 start end dir dirs mode
+    [[ $limit =~ ^(100|[2-9][0-9])$ ]] || die "The charge limit must be 20-100, not '$limit'"
+    start=$((limit - GAP))
+    mapfile -t dirs < <(batteries)
+    ((${#dirs[@]})) || die "No battery with a charge limit was found"
+    for dir in "${dirs[@]}"; do
+        if [[ -f $dir/charge_control_start_threshold ]]; then
+            # The kernel rejects a start threshold above the end threshold,
+            # so order the two writes to keep the pair valid in between.
+            end=$(attr "$dir/charge_control_end_threshold")
+            [[ $end =~ ^[0-9]+$ ]] || end=100
+            if ((start > end)); then
+                write "$dir/charge_control_end_threshold" "$limit"
+                write "$dir/charge_control_start_threshold" "$start"
+            else
+                write "$dir/charge_control_start_threshold" "$start"
+                write "$dir/charge_control_end_threshold" "$limit"
+            fi
+        else
+            write "$dir/charge_control_end_threshold" "$limit"
+        fi
+        # Some laptops (e.g. Dell) only follow the thresholds in the "Custom" charge mode.
+        if [[ -f $dir/charge_types ]]; then
+            mode=Custom
+            if ((limit == 100)); then mode=Standard; fi
+            if [[ $(attr "$dir/charge_types") == *"$mode"* ]]; then
+                printf '%s' "$mode" 2>/dev/null >"$dir/charge_types" || true
+            fi
+        fi
+    done
+}
+
+cmd_install() {
+    ((EUID == 0)) || die "install must run as root"
+    local self
+    self=$(realpath "${BASH_SOURCE[0]}")
+    if [[ $self != "$INSTALLED" ]]; then
+        install -D -m 0755 -o root -g root "$self" "$INSTALLED"
+    fi
+    cat >"$RULE" <<EOF
+// Installed by the Charge Limit Plasma widget: https://github.com/Nevaberry/plasma-charge-limit
+// Lets whoever is sitting at this computer change the battery charge limit without a password.
+// To undo: sudo rm $RULE $INSTALLED
+polkit.addRule(function (action, subject) {
+    var program = "$INSTALLED";
+    var args = String(action.lookup("command_line")).split(" ");
+    if (action.id === "org.freedesktop.policykit.exec" && action.lookup("program") === program &&
+        args.length === 3 && args[0] === program && args[1] === "set" && /^[0-9]+\$/.test(args[2]) &&
+        subject.local && subject.active) {
+        return polkit.Result.YES;
+    }
+});
+EOF
+    chmod 0644 "$RULE"
+    if [[ -n $1 ]]; then cmd_set "$1"; fi
+}
+
+case ${1:-} in
+status) cmd_status ;;
+set) cmd_set "${2:-}" ;;
+install) cmd_install "${2:-}" ;;
+*) die "Usage: ${0##*/} status | set LIMIT | install [LIMIT]" ;;
+esac
