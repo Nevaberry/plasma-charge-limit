@@ -20,7 +20,7 @@ The first time you pick a limit, Plasma asks for your password once. The widget 
 - `/usr/local/libexec/plasma-charge-limit-helper` is a copy of [the script](package/contents/scripts/chargelimit-helper) that writes the limit.
 - `/etc/polkit-1/rules.d/50-plasma-charge-limit.rules` lets whoever is sitting at the computer run that script without a password. Remote (SSH) users still need one. This is the same default UPower uses for its own charge limit switch.
 
-To update, run `git pull`, then the same `kpackagetool6` command with `--upgrade` instead of `--install`. If you also added the widget to a panel, add it there again after upgrading.
+To update, run `git pull`, then the same `kpackagetool6` command with `--upgrade` instead of `--install`, and log out and back in: Plasma keeps running the old version until then. If you also added the widget to a panel, add it there again after upgrading.
 
 ## How it works
 
