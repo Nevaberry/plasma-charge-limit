@@ -12,7 +12,7 @@
         "Id": "com.nevaberry.chargelimit",
         "License": "MIT",
         "Name": "Charge Limit",
-        "Version": "1.0.0",
+        "Version": "1.1.0",
         "Website": "https://github.com/Nevaberry/plasma-charge-limit"
     },
     "KPackageStructure": "Plasma/Applet",

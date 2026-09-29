@@ -78,9 +78,26 @@ PlasmoidItem {
             text: i18n("No battery with a charge limit found")
         }
 
-        PlasmaComponents3.Label {
+        RowLayout {
+            Layout.fillWidth: true
             visible: root.limit > 0
-            text: i18n("Stop charging at")
+
+            PlasmaComponents3.Label {
+                Layout.fillWidth: true
+                text: i18n("Stop charging at")
+            }
+
+            PlasmaComponents3.ToolButton {
+                id: tipsButton
+                icon.name: "help-about"
+                text: i18n("Tips")
+                display: PlasmaComponents3.AbstractButton.IconOnly
+                checkable: true
+
+                PlasmaComponents3.ToolTip {
+                    text: tipsButton.text
+                }
+            }
         }
 
         RowLayout {
@@ -128,6 +145,34 @@ PlasmoidItem {
             text: root.error
             color: Kirigami.Theme.negativeTextColor
             wrapMode: Text.Wrap
+        }
+
+        ColumnLayout {
+            Layout.fillWidth: true
+            visible: tipsButton.checked && root.limit > 0
+            spacing: Kirigami.Units.largeSpacing
+
+            Kirigami.Separator {
+                Layout.fillWidth: true
+            }
+
+            Repeater {
+                model: [
+                    i18n("Around 50% is best when the laptop is always plugged in, 80% for daily use, and 100% only when you need the range, like before a trip."),
+                    i18n("If a new limit doesn't take effect, unplug the charger and plug it back in."),
+                    i18n("A lower limit doesn't drain the battery. It only stops charging, and charging starts again once the battery is a little below the limit."),
+                    i18n("Rarely change the limit? Right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Show only in popup</b>."),
+                ]
+
+                PlasmaComponents3.Label {
+                    required property string modelData
+
+                    Layout.fillWidth: true
+                    text: modelData
+                    font: Kirigami.Theme.smallFont
+                    wrapMode: Text.Wrap
+                }
+            }
         }
 
         Item {
