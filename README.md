@@ -13,14 +13,14 @@ git clone https://github.com/Nevaberry/plasma-charge-limit
 kpackagetool6 --type Plasma/Applet --install plasma-charge-limit/package
 ```
 
-Then add it to your panel: right-click the panel, choose **Add Widgets…**, then **Charge Limit**. Or put it in the system tray: right-click the tray's arrow, choose **Configure System Tray...**, and under **Entries** set **Charge Limit** to **Show only in popup** to keep it behind the arrow, or **Always show**.
+Charge Limit then appears in the system tray, behind the arrow. To keep it always visible, right-click the arrow, choose **Configure System Tray...**, and set **Charge Limit** to **Always show**.
 
 The first time you pick a limit, Plasma asks for your password once. The widget then installs two small files so later changes need no password:
 
 - `/usr/local/libexec/plasma-charge-limit-helper` is a copy of [the script](package/contents/scripts/chargelimit-helper) that writes the limit.
 - `/etc/polkit-1/rules.d/50-plasma-charge-limit.rules` lets whoever is sitting at the computer run that script without a password. Remote (SSH) users still need one. This is the same default UPower uses for its own charge limit switch.
 
-To update, run `git pull`, then the same `kpackagetool6` command with `--upgrade` instead of `--install`.
+To update, run `git pull`, then the same `kpackagetool6` command with `--upgrade` instead of `--install`. If you also added the widget to a panel, add it there again after upgrading.
 
 ## How it works
 

@@ -34,7 +34,8 @@ PlasmoidItem {
     property int commandCount: 0
 
     Plasmoid.icon: limit ? `battery-${String(Math.round(limit / 10) * 10).padStart(3, "0")}` : "battery-missing"
-    Plasmoid.status: limit ? PlasmaCore.Types.ActiveStatus : PlasmaCore.Types.PassiveStatus
+    // Passive keeps it behind the system tray arrow; hidden completely without a battery.
+    Plasmoid.status: limit ? PlasmaCore.Types.PassiveStatus : PlasmaCore.Types.HiddenStatus
     toolTipMainText: i18n("Charge Limit")
     toolTipSubText: limit ? i18n("Stops charging at %1%", limit) : i18n("No battery with a charge limit found")
 
@@ -159,7 +160,7 @@ PlasmoidItem {
             Repeater {
                 model: [
                     i18n("If a new limit doesn't take effect, unplug the charger and plug it back in."),
-                    i18n("Right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Show only in popup</b>."),
+                    i18n("To keep Charge Limit always visible, right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Always show</b>."),
                 ]
 
                 PlasmaComponents3.Label {
