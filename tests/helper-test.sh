@@ -2,6 +2,7 @@
 # Tests the widget's helper script against a fake /sys/class/power_supply.
 # Usage: tests/helper-test.sh
 set -euo pipefail
+export LC_ALL=C
 
 if ((EUID == 0)); then
     echo "Run the tests as a normal user: as root the helper would use the real battery." >&2
@@ -84,6 +85,15 @@ check "custom charge mode" "Custom" "$(value BAT0/charge_types)"
 echo "Standard [Custom] Long_Life" >"$sysfs/BAT0/charge_types"
 helper set 100
 check "standard charge mode at 100%" "Standard" "$(value BAT0/charge_types)"
+
+# A rejected charge-mode change must not look like a successful limit change.
+echo "[Standard] Custom Long_Life" >"$sysfs/BAT0/charge_types"
+chmod 444 "$sysfs/BAT0/charge_types"
+result=0
+output=$(helper set 80 2>&1) || result=$?
+check "charge mode write fails" 1 "$result"
+check "charge mode error" "Could not set charge_types to Custom: Permission denied" "$output"
+check "failed charge mode is unchanged" "[Standard] Custom Long_Life" "$(value BAT0/charge_types)"
 
 # Write errors are reported with the reason.
 reset

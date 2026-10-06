@@ -1,0 +1,93 @@
+# Hindi translations for Charge Limit.
+# SPDX-FileCopyrightText: 2026 Antti Jalomäki
+# SPDX-License-Identifier: MIT
+msgid ""
+msgstr ""
+"Project-Id-Version: Charge Limit\n"
+"Report-Msgid-Bugs-To: https://github.com/Nevaberry/plasma-charge-limit/issues\n"
+"PO-Revision-Date: 2026-10-06 08:56+0000\n"
+"Last-Translator: Charge Limit contributors\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, kde-format
+msgid "Charge Limit"
+msgstr "चार्ज सीमा"
+
+#, kde-format
+msgid "Stops charging at %1%"
+msgstr "%1% पर चार्ज करना बंद करता है"
+
+#, kde-format
+msgid "No battery with a charge limit found"
+msgstr "चार्ज सीमा तय करने की सुविधा वाली कोई बैटरी नहीं मिली"
+
+#, kde-format
+msgctxt "charge limit on the panel icon"
+msgid "%1%"
+msgstr "%1%"
+
+#, kde-format
+msgid "Stop charging at"
+msgstr "इस स्तर पर चार्जिंग रोकें"
+
+#, kde-format
+msgid "Tips"
+msgstr "सुझाव"
+
+#, kde-format
+msgctxt "charge limit preset"
+msgid "%1%"
+msgstr "%1%"
+
+#, kde-format
+msgid "This update asks for your password once."
+msgstr "इस अपडेट के लिए आपका पासवर्ड केवल एक बार माँगा जाएगा।"
+
+#, kde-format
+msgid "The first change asks for your password once."
+msgstr "पहले बदलाव पर आपका पासवर्ड केवल एक बार माँगा जाएगा।"
+
+#, kde-format
+msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
+msgstr "यदि नई सीमा लागू नहीं होती है, तो चार्जर निकालकर दोबारा लगाएँ।"
+
+#, kde-format
+msgid "To keep Charge Limit always visible, right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Always show</b>."
+msgstr "चार्ज सीमा को हमेशा दिखाने के लिए, सिस्टम ट्रे के तीर पर दायाँ क्लिक करें, <b>सिस्टम ट्रे कॉन्फ़िगर करें...</b> चुनें और चार्ज सीमा के लिए <b>हमेशा दिखाए गए</b> विकल्प चुनें।"
+
+#, kde-format
+msgid "Battery at %1%, charging"
+msgstr "बैटरी %1%, चार्ज हो रही है"
+
+#, kde-format
+msgid "Battery at %1%, discharging"
+msgstr "बैटरी %1%, चार्ज घट रहा है"
+
+#, kde-format
+msgid "Battery at %1%, fully charged"
+msgstr "बैटरी %1%, पूरी तरह चार्ज है"
+
+#, kde-format
+msgid "Battery at %1%, not charging"
+msgstr "बैटरी %1%, चार्ज नहीं हो रही है"
+
+#, kde-format
+msgid "Battery at %1%"
+msgstr "बैटरी %1%"
+
+#, kde-format
+msgid "Could not read the charge limit."
+msgstr "चार्ज सीमा पढ़ी नहीं जा सकी।"
+
+#, kde-format
+msgid "Could not change the charge limit."
+msgstr "चार्ज सीमा बदली नहीं जा सकी।"
+
+#, kde-format
+msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+msgstr "एक क्लिक से बैटरी की चार्ज सीमा बदलें: 50, 80, 90 या 100%"

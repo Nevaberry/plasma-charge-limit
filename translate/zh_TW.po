@@ -1,0 +1,93 @@
+# Traditional Chinese translations for Charge Limit.
+# SPDX-FileCopyrightText: 2026 Antti Jalomäki
+# SPDX-License-Identifier: MIT
+msgid ""
+msgstr ""
+"Project-Id-Version: Charge Limit\n"
+"Report-Msgid-Bugs-To: https://github.com/Nevaberry/plasma-charge-limit/issues\n"
+"PO-Revision-Date: 2026-10-06 08:56+0000\n"
+"Last-Translator: Charge Limit contributors\n"
+"Language-Team: Traditional Chinese\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, kde-format
+msgid "Charge Limit"
+msgstr "充電上限"
+
+#, kde-format
+msgid "Stops charging at %1%"
+msgstr "電量達到 %1% 時停止充電"
+
+#, kde-format
+msgid "No battery with a charge limit found"
+msgstr "找不到支援設定充電上限的電池"
+
+#, kde-format
+msgctxt "charge limit on the panel icon"
+msgid "%1%"
+msgstr "%1%"
+
+#, kde-format
+msgid "Stop charging at"
+msgstr "停止充電的電量"
+
+#, kde-format
+msgid "Tips"
+msgstr "提示"
+
+#, kde-format
+msgctxt "charge limit preset"
+msgid "%1%"
+msgstr "%1%"
+
+#, kde-format
+msgid "This update asks for your password once."
+msgstr "此次更新只需輸入一次密碼。"
+
+#, kde-format
+msgid "The first change asks for your password once."
+msgstr "首次變更時只需輸入一次密碼。"
+
+#, kde-format
+msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
+msgstr "如果新的上限未生效，請拔除充電器後重新插入。"
+
+#, kde-format
+msgid "To keep Charge Limit always visible, right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Always show</b>."
+msgstr "若要讓充電上限一直顯示，請在系統匣箭頭上按滑鼠右鍵，選擇<b>設定系統匣...</b>，再將充電上限設為<b>總是顯示</b>。"
+
+#, kde-format
+msgid "Battery at %1%, charging"
+msgstr "電池電量 %1%，正在充電"
+
+#, kde-format
+msgid "Battery at %1%, discharging"
+msgstr "電池電量 %1%，正在放電"
+
+#, kde-format
+msgid "Battery at %1%, fully charged"
+msgstr "電池電量 %1%，已充飽"
+
+#, kde-format
+msgid "Battery at %1%, not charging"
+msgstr "電池電量 %1%，未在充電"
+
+#, kde-format
+msgid "Battery at %1%"
+msgstr "電池電量 %1%"
+
+#, kde-format
+msgid "Could not read the charge limit."
+msgstr "無法讀取充電上限。"
+
+#, kde-format
+msgid "Could not change the charge limit."
+msgstr "無法變更充電上限。"
+
+#, kde-format
+msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+msgstr "一鍵切換電池充電上限：50%、80%、90% 或 100%"

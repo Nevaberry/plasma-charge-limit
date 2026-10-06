@@ -17,6 +17,9 @@ import org.kde.plasma.workspace.components as WorkspaceComponents
 PlasmoidItem {
     id: root
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection === Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     readonly property var presets: [50, 80, 90, 100]
     // The helper ships inside this widget. The first change installs a copy here (see README).
     readonly property string installedHelper: "/usr/local/libexec/plasma-charge-limit-helper"
@@ -86,6 +89,7 @@ PlasmoidItem {
             PlasmaComponents3.Label {
                 Layout.fillWidth: true
                 text: i18n("Stop charging at")
+                wrapMode: Text.Wrap
             }
 
             PlasmaComponents3.ToolButton {
@@ -124,9 +128,7 @@ PlasmoidItem {
         PlasmaComponents3.Label {
             Layout.fillWidth: true
             visible: root.limit > 0
-            text: root.batteryState
-                ? i18n("Battery at %1%, %2", root.capacity, root.batteryState.toLowerCase())
-                : i18n("Battery at %1%", root.capacity)
+            text: root.batteryStatusText()
             opacity: 0.7
             wrapMode: Text.Wrap
         }
@@ -134,7 +136,9 @@ PlasmoidItem {
         PlasmaComponents3.Label {
             Layout.fillWidth: true
             visible: root.limit > 0 && root.helperState !== "ready" && !root.error
-            text: i18n("The first change asks for your password once.")
+            text: root.helperState === "outdated"
+                ? i18n("This update asks for your password once.")
+                : i18n("The first change asks for your password once.")
             font: Kirigami.Theme.smallFont
             opacity: 0.7
             wrapMode: Text.Wrap
@@ -211,6 +215,22 @@ PlasmoidItem {
         return `'${text.replace(/'/g, `'\\''`)}'`
     }
 
+    function batteryStatusText() {
+        // Translate whole sentences: the kernel's English status is not UI text.
+        switch (root.batteryState) {
+        case "Charging":
+            return i18n("Battery at %1%, charging", root.capacity)
+        case "Discharging":
+            return i18n("Battery at %1%, discharging", root.capacity)
+        case "Full":
+            return i18n("Battery at %1%, fully charged", root.capacity)
+        case "Not charging":
+            return i18n("Battery at %1%, not charging", root.capacity)
+        default:
+            return i18n("Battery at %1%", root.capacity)
+        }
+    }
+
     function refresh() {
         run(`/bin/bash ${quote(bundledHelper)} status`, (code, stdout, stderr) => {
             const status = {}
@@ -226,7 +246,7 @@ PlasmoidItem {
             batteryState = status.state || ""
             helperState = status.helper || "setup"
             if (code !== 0) {
-                error = stderr || i18n("Could not read the charge limit.")
+                error = i18n("Could not read the charge limit.") + (stderr ? "\n" + stderr.split("\n")[0] : "")
             }
         })
     }
@@ -243,7 +263,7 @@ PlasmoidItem {
                 // Let Plasma's own battery widget pick up the new limit too.
                 run("gdbus call --session --dest org.kde.Solid.PowerManagement --object-path /org/kde/Solid/PowerManagement --method org.kde.Solid.PowerManagement.reparseConfiguration", null)
             } else if (code !== 126) { // 126: the password dialog was dismissed
-                error = stderr.split("\n")[0] || i18n("Could not change the charge limit.")
+                error = i18n("Could not change the charge limit.") + (stderr ? "\n" + stderr.split("\n")[0] : "")
             }
             refresh()
         })

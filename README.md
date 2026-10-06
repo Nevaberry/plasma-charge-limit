@@ -8,6 +8,10 @@ Plasma already has this setting in System Settings under Power Management, but i
 
 ## Install
 
+Find **Charge Limit** in Plasma's **Get New Widgets**, or download it from the [KDE Store](https://store.kde.org/p/2376310) or [GitHub releases](https://github.com/Nevaberry/plasma-charge-limit/releases/latest).
+
+To install from source:
+
 ```sh
 git clone https://github.com/Nevaberry/plasma-charge-limit
 kpackagetool6 --type Plasma/Applet --install plasma-charge-limit/package
@@ -21,6 +25,14 @@ The first time you pick a limit, Plasma asks for your password once. The widget 
 - `/etc/polkit-1/rules.d/50-plasma-charge-limit.rules` lets whoever is sitting at the computer run that script without a password. Remote (SSH) users still need one. This is the same default UPower uses for its own charge limit switch.
 
 To update, run `git pull`, then the same `kpackagetool6` command with `--upgrade` instead of `--install`, and log out and back in: Plasma keeps running the old version until then. If you also added the widget to a panel, add it there again after upgrading.
+
+An update that changes the helper asks for your password once more to install the new helper.
+
+## Languages
+
+The widget follows Plasma's language preference automatically, with English as the fallback. There is no separate language setting.
+
+Translations are included for Arabic, Dutch, Finnish, French, German, Hindi, Italian, Japanese, Korean, Polish, Portuguese (Portugal and Brazil), Russian, Spanish, Swedish, Turkish, Ukrainian, and Chinese (Simplified and Traditional). This covers the widget, battery status, tips, and its name and description in the widget picker. System error details are shown as returned by the helper.
 
 ## How it works
 
@@ -47,6 +59,24 @@ sudo rm /usr/local/libexec/plasma-charge-limit-helper /etc/polkit-1/rules.d/50-p
 ## Development
 
 `tests/helper-test.sh` tests the helper script against a fake `/sys/class/power_supply`.
+
+Translations use KDE's standard gettext catalogs. Edit `translate/<language>.po`, then run:
+
+```sh
+python3 translate/translations.py build
+python3 translate/translations.py check
+```
+
+These developer commands require Python 3 and GNU gettext (`xgettext`, `msgmerge`, `msgcmp`, and `msgfmt`). The compiled catalogs in `package/contents/locale` are committed, so installing or using the widget requires no translation tools. The build also translates the widget metadata from the same catalogs.
+
+After changing English UI text, run `python3 translate/translations.py update` and translate the new messages. To add a language, create its catalog with `msginit --no-translator --locale=nl --input=translate/template.pot --output-file=translate/nl.po` (replace `nl` with the new language code), translate it, then build. Keep `%1` placeholders and HTML tags intact. `check` rejects missing translations, invalid placeholders, and stale compiled catalogs or metadata.
+
+To package a release after running the checks:
+
+```sh
+cd package
+zip -r ../charge-limit-1.3.0.plasmoid metadata.json contents
+```
 
 ## License
 

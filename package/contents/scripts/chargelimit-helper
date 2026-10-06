@@ -94,7 +94,7 @@ cmd_set() {
             mode=Custom
             if ((limit == 100)); then mode=Standard; fi
             if [[ $(attr "$dir/charge_types") == *"$mode"* ]]; then
-                printf '%s' "$mode" 2>/dev/null >"$dir/charge_types" || true
+                write "$dir/charge_types" "$mode"
             fi
         fi
     done

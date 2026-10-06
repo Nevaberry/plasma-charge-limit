@@ -1,0 +1,93 @@
+# Swedish translations for Charge Limit.
+# SPDX-FileCopyrightText: 2026 Antti Jalomäki
+# SPDX-License-Identifier: MIT
+msgid ""
+msgstr ""
+"Project-Id-Version: Charge Limit\n"
+"Report-Msgid-Bugs-To: https://github.com/Nevaberry/plasma-charge-limit/issues\n"
+"PO-Revision-Date: 2026-10-06 08:55+0000\n"
+"Last-Translator: Charge Limit contributors\n"
+"Language-Team: Swedish\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, kde-format
+msgid "Charge Limit"
+msgstr "Laddningsgräns"
+
+#, kde-format
+msgid "Stops charging at %1%"
+msgstr "Slutar ladda vid %1 %"
+
+#, kde-format
+msgid "No battery with a charge limit found"
+msgstr "Inget batteri med justerbar laddningsgräns hittades"
+
+#, kde-format
+msgctxt "charge limit on the panel icon"
+msgid "%1%"
+msgstr "%1 %"
+
+#, kde-format
+msgid "Stop charging at"
+msgstr "Sluta ladda vid"
+
+#, kde-format
+msgid "Tips"
+msgstr "Tips"
+
+#, kde-format
+msgctxt "charge limit preset"
+msgid "%1%"
+msgstr "%1 %"
+
+#, kde-format
+msgid "This update asks for your password once."
+msgstr "Den här uppdateringen frågar efter ditt lösenord en gång."
+
+#, kde-format
+msgid "The first change asks for your password once."
+msgstr "Den första ändringen frågar efter ditt lösenord en gång."
+
+#, kde-format
+msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
+msgstr "Om en ny gräns inte får effekt, koppla ur laddaren och anslut den igen."
+
+#, kde-format
+msgid "To keep Charge Limit always visible, right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Always show</b>."
+msgstr "För att alltid visa Laddningsgräns, högerklicka på systembrickans pil, välj <b>Anpassa systembrickan...</b> och ställ in Laddningsgräns på <b>Visa alltid</b>."
+
+#, kde-format
+msgid "Battery at %1%, charging"
+msgstr "Batteriet är på %1 %, laddar"
+
+#, kde-format
+msgid "Battery at %1%, discharging"
+msgstr "Batteriet är på %1 %, laddas ur"
+
+#, kde-format
+msgid "Battery at %1%, fully charged"
+msgstr "Batteriet är på %1 %, fulladdat"
+
+#, kde-format
+msgid "Battery at %1%, not charging"
+msgstr "Batteriet är på %1 %, laddar inte"
+
+#, kde-format
+msgid "Battery at %1%"
+msgstr "Batteriet är på %1 %"
+
+#, kde-format
+msgid "Could not read the charge limit."
+msgstr "Kunde inte läsa laddningsgränsen."
+
+#, kde-format
+msgid "Could not change the charge limit."
+msgstr "Kunde inte ändra laddningsgränsen."
+
+#, kde-format
+msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+msgstr "Ändra batteriets laddningsgräns med ett klick: 50, 80, 90 eller 100 %"

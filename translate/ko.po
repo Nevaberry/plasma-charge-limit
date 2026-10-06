@@ -1,0 +1,93 @@
+# Korean translations for Charge Limit.
+# SPDX-FileCopyrightText: 2026 Antti Jalomäki
+# SPDX-License-Identifier: MIT
+msgid ""
+msgstr ""
+"Project-Id-Version: Charge Limit\n"
+"Report-Msgid-Bugs-To: https://github.com/Nevaberry/plasma-charge-limit/issues\n"
+"PO-Revision-Date: 2026-10-06 08:56+0000\n"
+"Last-Translator: Charge Limit contributors\n"
+"Language-Team: Korean\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, kde-format
+msgid "Charge Limit"
+msgstr "충전 한도"
+
+#, kde-format
+msgid "Stops charging at %1%"
+msgstr "%1%에서 충전을 멈춥니다"
+
+#, kde-format
+msgid "No battery with a charge limit found"
+msgstr "충전 한도를 설정할 수 있는 배터리를 찾을 수 없습니다"
+
+#, kde-format
+msgctxt "charge limit on the panel icon"
+msgid "%1%"
+msgstr "%1%"
+
+#, kde-format
+msgid "Stop charging at"
+msgstr "충전을 멈출 잔량"
+
+#, kde-format
+msgid "Tips"
+msgstr "도움말"
+
+#, kde-format
+msgctxt "charge limit preset"
+msgid "%1%"
+msgstr "%1%"
+
+#, kde-format
+msgid "This update asks for your password once."
+msgstr "이 업데이트에서는 암호를 한 번만 요청합니다."
+
+#, kde-format
+msgid "The first change asks for your password once."
+msgstr "처음 변경할 때 암호를 한 번만 요청합니다."
+
+#, kde-format
+msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
+msgstr "새 한도가 적용되지 않으면 충전기를 분리한 후 다시 연결하십시오."
+
+#, kde-format
+msgid "To keep Charge Limit always visible, right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Always show</b>."
+msgstr "충전 한도를 항상 표시하려면 시스템 트레이 화살표를 마우스 오른쪽 단추로 클릭하고 <b>시스템 트레이 설정...</b>을 선택한 다음, 충전 한도를 <b>항상 표시</b>로 설정하십시오."
+
+#, kde-format
+msgid "Battery at %1%, charging"
+msgstr "배터리 %1%, 충전 중"
+
+#, kde-format
+msgid "Battery at %1%, discharging"
+msgstr "배터리 %1%, 방전 중"
+
+#, kde-format
+msgid "Battery at %1%, fully charged"
+msgstr "배터리 %1%, 완전히 충전됨"
+
+#, kde-format
+msgid "Battery at %1%, not charging"
+msgstr "배터리 %1%, 충전하지 않음"
+
+#, kde-format
+msgid "Battery at %1%"
+msgstr "배터리 %1%"
+
+#, kde-format
+msgid "Could not read the charge limit."
+msgstr "충전 한도를 읽을 수 없습니다."
+
+#, kde-format
+msgid "Could not change the charge limit."
+msgstr "충전 한도를 변경할 수 없습니다."
+
+#, kde-format
+msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+msgstr "한 번의 클릭으로 배터리 충전 한도를 변경합니다: 50, 80, 90 또는 100%"
