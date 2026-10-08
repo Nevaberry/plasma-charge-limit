@@ -78,6 +78,11 @@ msgstr ""
 msgid "Could not read the charge limit."
 msgstr ""
 
+#. TRANSLATORS: %1 is a terminal command; do not translate pkexec.
+#, kde-format
+msgid "pkexec is missing. Install it with your package manager. On Debian, run: %1"
+msgstr ""
+
 #, kde-format
 msgid "Could not change the charge limit."
 msgstr ""

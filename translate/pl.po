@@ -84,6 +84,11 @@ msgstr "Bateria: %1%"
 msgid "Could not read the charge limit."
 msgstr "Nie można odczytać limitu ładowania."
 
+#. TRANSLATORS: %1 is a terminal command; do not translate pkexec.
+#, kde-format
+msgid "pkexec is missing. Install it with your package manager. On Debian, run: %1"
+msgstr "Brakuje pkexec. Zainstaluj go za pomocą menedżera pakietów. W Debianie uruchom: %1"
+
 #, kde-format
 msgid "Could not change the charge limit."
 msgstr "Nie można zmienić limitu ładowania."

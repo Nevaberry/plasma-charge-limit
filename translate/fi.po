@@ -84,6 +84,11 @@ msgstr "Akun varaus %1 %"
 msgid "Could not read the charge limit."
 msgstr "Latausrajan lukeminen epäonnistui."
 
+#. TRANSLATORS: %1 is a terminal command; do not translate pkexec.
+#, kde-format
+msgid "pkexec is missing. Install it with your package manager. On Debian, run: %1"
+msgstr "pkexec puuttuu. Asenna se paketinhallinnalla. Suorita Debianissa: %1"
+
 #, kde-format
 msgid "Could not change the charge limit."
 msgstr "Latausrajan muuttaminen epäonnistui."

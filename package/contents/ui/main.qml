@@ -148,6 +148,7 @@ PlasmoidItem {
             Layout.fillWidth: true
             visible: root.error !== ""
             text: root.error
+            textFormat: Text.PlainText
             color: Kirigami.Theme.negativeTextColor
             wrapMode: Text.Wrap
         }
@@ -254,18 +255,28 @@ PlasmoidItem {
     function setLimit(value) {
         pending = value
         error = ""
-        const command = helperState === "ready"
-            ? `pkexec ${installedHelper} set ${value}`
-            : `pkexec /bin/bash ${quote(bundledHelper)} install ${value}`
-        run(command, (code, stdout, stderr) => {
-            pending = 0
-            if (code === 0) {
-                // Let Plasma's own battery widget pick up the new limit too.
-                run("gdbus call --session --dest org.kde.Solid.PowerManagement --object-path /org/kde/Solid/PowerManagement --method org.kde.Solid.PowerManagement.reparseConfiguration", null)
-            } else if (code !== 126) { // 126: the password dialog was dismissed
-                error = i18n("Could not change the charge limit.") + (stderr ? "\n" + stderr.split("\n")[0] : "")
+        // Debian ships pkexec separately from polkit. Check on every attempt so
+        // installing the missing package takes effect without restarting Plasma.
+        run("command -v pkexec >/dev/null 2>&1", (code) => {
+            if (code !== 0) {
+                pending = 0
+                // TRANSLATORS: %1 is a terminal command; do not translate pkexec.
+                error = i18n("pkexec is missing. Install it with your package manager. On Debian, run: %1", "sudo apt install pkexec")
+                return
             }
-            refresh()
+            const command = helperState === "ready"
+                ? `pkexec ${installedHelper} set ${value}`
+                : `pkexec /bin/bash ${quote(bundledHelper)} install ${value}`
+            run(command, (code, stdout, stderr) => {
+                pending = 0
+                if (code === 0) {
+                    // Let Plasma's own battery widget pick up the new limit too.
+                    run("gdbus call --session --dest org.kde.Solid.PowerManagement --object-path /org/kde/Solid/PowerManagement --method org.kde.Solid.PowerManagement.reparseConfiguration", null)
+                } else if (code !== 126) { // 126: the password dialog was dismissed
+                    error = i18n("Could not change the charge limit.") + (stderr ? "\n" + stderr.split("\n")[0] : "")
+                }
+                refresh()
+            })
         })
     }
 }

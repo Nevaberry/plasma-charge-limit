@@ -10,6 +10,14 @@ Plasma already has this setting in System Settings under Power Management, but i
 
 Find **Charge Limit** in Plasma's **Get New Widgets**, or download it from the [KDE Store](https://store.kde.org/p/2376310) or [GitHub releases](https://github.com/Nevaberry/plasma-charge-limit/releases/latest).
 
+Requires **Plasma 6** and **pkexec** for the administrator password prompt. Fedora KDE normally includes pkexec. On Debian KDE, install the separate [pkexec package](https://packages.debian.org/trixie/pkexec):
+
+```sh
+sudo apt install pkexec
+```
+
+If your Debian installation uses a root password instead of sudo, run `su -c 'apt install pkexec'`. Installing the widget through Get New Widgets or a `.plasmoid` file does not install system packages. If pkexec is missing, the widget shows installation instructions; install it and click a charge limit again.
+
 To install from source:
 
 ```sh
@@ -60,6 +68,8 @@ sudo rm /usr/local/libexec/plasma-charge-limit-helper /etc/polkit-1/rules.d/50-p
 
 `tests/helper-test.sh` tests the helper script against a fake `/sys/class/power_supply`.
 
+`node --test tests/set-limit-test.mjs` tests the widget's dependency check and authentication flow with a fake pkexec, without changing system files or battery settings. Node.js is needed only for this developer test.
+
 Translations use KDE's standard gettext catalogs. Edit `translate/<language>.po`, then run:
 
 ```sh
@@ -75,7 +85,7 @@ To package a release after running the checks:
 
 ```sh
 cd package
-zip -r ../charge-limit-1.3.0.plasmoid metadata.json contents
+zip -r ../charge-limit-1.3.1.plasmoid metadata.json contents
 ```
 
 ## License

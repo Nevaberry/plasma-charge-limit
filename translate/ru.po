@@ -84,6 +84,11 @@ msgstr "Заряд батареи: %1%"
 msgid "Could not read the charge limit."
 msgstr "Не удалось прочитать предел заряда."
 
+#. TRANSLATORS: %1 is a terminal command; do not translate pkexec.
+#, kde-format
+msgid "pkexec is missing. Install it with your package manager. On Debian, run: %1"
+msgstr "pkexec отсутствует. Установите его с помощью менеджера пакетов. В Debian выполните: %1"
+
 #, kde-format
 msgid "Could not change the charge limit."
 msgstr "Не удалось изменить предел заряда."

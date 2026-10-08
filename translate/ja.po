@@ -84,6 +84,11 @@ msgstr "バッテリー残量 %1%"
 msgid "Could not read the charge limit."
 msgstr "充電上限を読み取れませんでした。"
 
+#. TRANSLATORS: %1 is a terminal command; do not translate pkexec.
+#, kde-format
+msgid "pkexec is missing. Install it with your package manager. On Debian, run: %1"
+msgstr "pkexec が見つかりません。パッケージマネージャーでインストールしてください。Debian では次のコマンドを実行してください: %1"
+
 #, kde-format
 msgid "Could not change the charge limit."
 msgstr "充電上限を変更できませんでした。"
