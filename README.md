@@ -1,6 +1,6 @@
 # Charge Limit
 
-A KDE Plasma 6 widget that sets your laptop's battery charge limit with one click: **50%, 80%, 90% or 100%**.
+A KDE Plasma 6 widget that protects your laptop's battery with one click. Choose **50%, 80%, 90% or 100%** on laptops with adjustable charge limits, or **Battery conservation / Full charge** on supported Lenovo Yoga and IdeaPad laptops.
 
 A battery lasts longer when it isn't kept full, the same advice given for electric cars. Use about 50% if the laptop is always plugged in, about 80% for daily use, and 100% only when you need the range, for example before a trip.
 
@@ -44,15 +44,20 @@ Translations are included for Arabic, Dutch, Finnish, French, German, Hindi, Ita
 
 ## How it works
 
-The widget writes the same kernel settings as Plasma's own charge limit setting, for every battery that has them:
+On laptops with adjustable limits, the widget writes the same kernel settings as Plasma's own charge limit setting, for every battery that has them:
 
 - `charge_control_end_threshold` is set to the limit.
 - `charge_control_start_threshold` is set to 5% below the limit, on laptops that have it. Charging restarts only when the battery drops below that.
 
-If `ls /sys/class/power_supply/BAT*/charge_control_end_threshold` finds a file, the widget works on your laptop. If not, the widget says "No battery with a charge limit found".
+Lenovo Yoga and IdeaPad laptops may instead expose `conservation_mode` under `/sys/bus/platform/drivers/ideapad_acpi/*/`. The widget detects that control when adjustable thresholds are unavailable and offers **Battery conservation** and **Full charge**. It checks the firmware's response after each change. The panel badge shows a check mark when conservation is enabled, or 100% for full charge.
+
+Conservation mode uses a fixed reduced charge limit chosen by the laptop's firmware. It does not support arbitrary percentages, and the interface does not report the exact limit. Depending on the model, 60% or 80% is common; see [TLP's Lenovo documentation](https://linrunner.de/tlp/settings/bc-vendors.html#lenovo-non-thinkpad-series). The widget therefore does not claim a specific reduced percentage.
+
+If neither adjustable thresholds nor Lenovo conservation mode is available, the widget says "No battery with a charge limit found".
 
 Good to know:
 
+- Reducing the limit does not drain an already-full battery. Use the laptop on battery power to bring it below the limit; conservation mode then prevents charging back to full.
 - On some laptops a new limit takes effect only after you unplug and replug the charger.
 - Some laptops only accept certain values, such as 80% or 100%. The widget shows the error if your laptop rejects a value.
 - ThinkPads remember the limit across reboots. Some other laptops reset it to 100% when they start, the same as with Plasma's own setting.
@@ -66,7 +71,7 @@ sudo rm /usr/local/libexec/plasma-charge-limit-helper /etc/polkit-1/rules.d/50-p
 
 ## Development
 
-`tests/helper-test.sh` tests the helper script against a fake `/sys/class/power_supply`.
+`tests/helper-test.sh` tests the helper script against fake battery and Lenovo platform controls, including conservation mode, rejected writes, and existing adjustable-threshold behavior.
 
 `node --test tests/set-limit-test.mjs` tests the widget's dependency check and authentication flow with a fake pkexec, without changing system files or battery settings. Node.js is needed only for this developer test.
 
@@ -85,8 +90,12 @@ To package a release after running the checks:
 
 ```sh
 cd package
-zip -r ../charge-limit-1.3.1.plasmoid metadata.json contents
+zip -r -FS ../charge-limit.plasmoid metadata.json contents
 ```
+
+Use `charge-limit.plasmoid` as the filename for every stable release. Keep the release version in `package/metadata.json` and the KDE Store version fields. `-FS` removes obsolete files from an existing archive when rebuilding it.
+
+On KDE Store, replace the existing stable file through its **Update** file chooser, then use **Save** for the release details. Do not delete it and add a new entry for each release. Verify the filename, version, checksum, and download count after publishing: the store can assign a new file ID and start a new per-file counter even when replacing a file, so a fixed filename alone does not guarantee counter preservation.
 
 ## License
 

@@ -19,6 +19,10 @@ msgid "Charge Limit"
 msgstr "充电上限"
 
 #, kde-format
+msgid "Battery conservation is on"
+msgstr "电池养护已开启"
+
+#, kde-format
 msgid "Stops charging at %1%"
 msgstr "电量达到 %1% 时停止充电"
 
@@ -45,12 +49,28 @@ msgid "%1%"
 msgstr "%1%"
 
 #, kde-format
+msgid "Battery conservation"
+msgstr "电池养护"
+
+#, kde-format
+msgid "Full charge"
+msgstr "充满电"
+
+#, kde-format
+msgid "This laptop sets its own reduced charge limit. Conservation mode helps preserve battery health."
+msgstr "此笔记本电脑会自行设定较低的充电上限。养护模式有助于保持电池健康。"
+
+#, kde-format
 msgid "This update asks for your password once."
 msgstr "此次更新只需输入一次密码。"
 
 #, kde-format
 msgid "The first change asks for your password once."
 msgstr "首次更改时只需输入一次密码。"
+
+#, kde-format
+msgid "If the battery is already above the limit, it will not charge again until it drops below it."
+msgstr "如果电池电量已超过上限，则会等到电量降至上限以下才重新充电。"
 
 #, kde-format
 msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
@@ -94,5 +114,9 @@ msgid "Could not change the charge limit."
 msgstr "无法更改充电上限。"
 
 #, kde-format
-msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
-msgstr "一键切换电池充电上限：50%、80%、90% 或 100%"
+msgid "Protect battery health with charge limits and battery conservation"
+msgstr "通过充电上限和电池养护模式保护电池健康"
+
+#, kde-format
+#~ msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+#~ msgstr "一键切换电池充电上限：50%、80%、90% 或 100%"

@@ -19,6 +19,10 @@ msgid "Charge Limit"
 msgstr "Laadlimiet"
 
 #, kde-format
+msgid "Battery conservation is on"
+msgstr "Accubescherming is ingeschakeld"
+
+#, kde-format
 msgid "Stops charging at %1%"
 msgstr "Stopt met laden bij %1%"
 
@@ -45,12 +49,28 @@ msgid "%1%"
 msgstr "%1%"
 
 #, kde-format
+msgid "Battery conservation"
+msgstr "Accubescherming"
+
+#, kde-format
+msgid "Full charge"
+msgstr "Volledig opladen"
+
+#, kde-format
+msgid "This laptop sets its own reduced charge limit. Conservation mode helps preserve battery health."
+msgstr "Deze laptop bepaalt zelf zijn verlaagde laadlimiet. De beschermingsmodus helpt de levensduur van de accu te verlengen."
+
+#, kde-format
 msgid "This update asks for your password once."
 msgstr "Deze update vraagt eenmalig om uw wachtwoord."
 
 #, kde-format
 msgid "The first change asks for your password once."
 msgstr "Bij de eerste wijziging wordt eenmalig om uw wachtwoord gevraagd."
+
+#, kde-format
+msgid "If the battery is already above the limit, it will not charge again until it drops below it."
+msgstr "Als de accu al boven de limiet zit, wordt deze pas weer opgeladen zodra het niveau eronder komt."
 
 #, kde-format
 msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
@@ -94,5 +114,9 @@ msgid "Could not change the charge limit."
 msgstr "De laadlimiet kon niet worden gewijzigd."
 
 #, kde-format
-msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
-msgstr "Wijzig de laadlimiet van de accu met één klik: 50, 80, 90 of 100%"
+msgid "Protect battery health with charge limits and battery conservation"
+msgstr "Bescherm de accu met laadlimieten en accubescherming"
+
+#, kde-format
+#~ msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+#~ msgstr "Wijzig de laadlimiet van de accu met één klik: 50, 80, 90 of 100%"

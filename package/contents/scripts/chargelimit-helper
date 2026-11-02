@@ -5,9 +5,9 @@
 # Helper for the Charge Limit Plasma widget: https://github.com/Nevaberry/plasma-charge-limit
 #
 #   chargelimit-helper status           Print the current charge limit (no root needed)
-#   chargelimit-helper set LIMIT        Set the charge limit, 20-100 (root)
-#   chargelimit-helper install [LIMIT]  One-time setup so that `set` needs no password,
-#                                       then set LIMIT if given (root)
+#   chargelimit-helper set TARGET      Set 20-100%, or conservation/full on Lenovo (root)
+#   chargelimit-helper install [TARGET] One-time setup so that `set` needs no password,
+#                                       then set TARGET if given (root)
 set -euo pipefail
 
 readonly INSTALLED=/usr/local/libexec/plasma-charge-limit-helper
@@ -15,8 +15,11 @@ readonly RULE=/etc/polkit-1/rules.d/50-plasma-charge-limit.rules
 readonly GAP=5 # charging starts again this many percent below the limit
 
 sysfs=/sys/class/power_supply
-if [[ $EUID -ne 0 && -n ${CHARGE_LIMIT_SYSFS:-} ]]; then
-    sysfs=$CHARGE_LIMIT_SYSFS # fake tree for tests, never used as root
+ideapad=/sys/bus/platform/drivers/ideapad_acpi
+if ((EUID != 0)); then
+    # Fake trees for tests, never used as root.
+    sysfs=${CHARGE_LIMIT_SYSFS:-$sysfs}
+    ideapad=${CHARGE_LIMIT_IDEAPAD_SYSFS:-$ideapad}
 fi
 
 die() {
@@ -31,15 +34,34 @@ attr() {
     printf '%s' "$value"
 }
 
-# Prints the batteries that have a charge limit, skipping peripherals like mice.
+# Prints system batteries, optionally requiring an adjustable charge limit.
 batteries() {
     local dir
     for dir in "$sysfs"/*; do
-        if [[ -f $dir/charge_control_end_threshold && $(attr "$dir/type") == Battery &&
-            $(attr "$dir/scope") != Device ]]; then
+        if [[ $(attr "$dir/type") == Battery && $(attr "$dir/scope") != Device &&
+            ( ${1:-} != threshold || -f $dir/charge_control_end_threshold ) ]]; then
             printf '%s\n' "$dir"
         fi
     done
+}
+
+# Lenovo Yoga/IdeaPad firmware exposes an on/off switch, not a percentage.
+# Discover it through the driver rather than assuming a particular device name.
+conservation_file() {
+    local dir
+    for dir in "$ideapad"/*; do
+        if [[ -f $dir/conservation_mode ]]; then
+            printf '%s\n' "$dir/conservation_mode"
+            return
+        fi
+    done
+}
+
+conservation_state() {
+    local state
+    state=$(attr "$1")
+    [[ $state == 0 || $state == 1 ]] || die "Could not read battery conservation mode"
+    printf '%s' "$state"
 }
 
 # Writes a value to a sysfs file, failing with the kernel's reason, e.g. "Invalid argument".
@@ -51,8 +73,8 @@ write() {
 }
 
 cmd_status() {
-    local dirs
-    mapfile -t dirs < <(batteries)
+    local dirs file state
+    mapfile -t dirs < <(batteries threshold)
     if [[ ! -f $INSTALLED ]]; then
         echo helper=setup
     elif [[ $(<"$INSTALLED") == "$(<"${BASH_SOURCE[0]}")" ]]; then
@@ -61,17 +83,37 @@ cmd_status() {
         echo helper=outdated
     fi
     if ((${#dirs[@]})); then
+        echo control=threshold
         echo "limit=$(attr "${dirs[0]}/charge_control_end_threshold")"
-        echo "capacity=$(attr "${dirs[0]}/capacity")"
-        echo "state=$(attr "${dirs[0]}/status")"
+    else
+        mapfile -t dirs < <(batteries)
+        file=$(conservation_file)
+        if ((${#dirs[@]} == 0)) || [[ -z $file ]]; then return; fi
+        state=$(conservation_state "$file")
+        echo control=conservation
+        echo "conservation=$state"
     fi
+    echo "capacity=$(attr "${dirs[0]}/capacity")"
+    echo "state=$(attr "${dirs[0]}/status")"
 }
 
 cmd_set() {
-    local limit=$1 start end dir dirs mode
+    local limit=$1 start end dir dirs mode file state
+    if [[ $limit == conservation || $limit == full ]]; then
+        mapfile -t dirs < <(batteries)
+        file=$(conservation_file)
+        ((${#dirs[@]})) && [[ -n $file ]] || die "No battery with conservation mode was found"
+        # Check readability before writing; a successful write alone is not enough.
+        state=$(conservation_state "$file")
+        state=1
+        if [[ $limit == full ]]; then state=0; fi
+        write "$file" "$state"
+        [[ $(conservation_state "$file") == "$state" ]] || die "The laptop did not apply battery conservation mode"
+        return
+    fi
     [[ $limit =~ ^(100|[2-9][0-9])$ ]] || die "The charge limit must be 20-100, not '$limit'"
     start=$((limit - GAP))
-    mapfile -t dirs < <(batteries)
+    mapfile -t dirs < <(batteries threshold)
     ((${#dirs[@]})) || die "No battery with a charge limit was found"
     for dir in "${dirs[@]}"; do
         if [[ -f $dir/charge_control_start_threshold ]]; then
@@ -115,7 +157,7 @@ polkit.addRule(function (action, subject) {
     var program = "$INSTALLED";
     var args = String(action.lookup("command_line")).split(" ");
     if (action.id === "org.freedesktop.policykit.exec" && action.lookup("program") === program &&
-        args.length === 3 && args[0] === program && args[1] === "set" && /^[0-9]+\$/.test(args[2]) &&
+        args.length === 3 && args[0] === program && args[1] === "set" && /^(?:[0-9]+|conservation|full)\$/.test(args[2]) &&
         subject.local && subject.active) {
         return polkit.Result.YES;
     }
@@ -129,5 +171,5 @@ case ${1:-} in
 status) cmd_status ;;
 set) cmd_set "${2:-}" ;;
 install) cmd_install "${2:-}" ;;
-*) die "Usage: ${0##*/} status | set LIMIT | install [LIMIT]" ;;
+*) die "Usage: ${0##*/} status | set TARGET | install [TARGET] (20-100, conservation or full)" ;;
 esac

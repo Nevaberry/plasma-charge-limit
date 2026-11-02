@@ -19,6 +19,10 @@ msgid "Charge Limit"
 msgstr "Latausraja"
 
 #, kde-format
+msgid "Battery conservation is on"
+msgstr "Akun suojaus on käytössä"
+
+#, kde-format
 msgid "Stops charging at %1%"
 msgstr "Lataus päättyy tasolla %1 %"
 
@@ -45,12 +49,28 @@ msgid "%1%"
 msgstr "%1 %"
 
 #, kde-format
+msgid "Battery conservation"
+msgstr "Akun suojaus"
+
+#, kde-format
+msgid "Full charge"
+msgstr "Täysi lataus"
+
+#, kde-format
+msgid "This laptop sets its own reduced charge limit. Conservation mode helps preserve battery health."
+msgstr "Tämä kannettava määrittää itse alennetun latausrajansa. Suojaustila auttaa säilyttämään akun kunnon."
+
+#, kde-format
 msgid "This update asks for your password once."
 msgstr "Tämä päivitys pyytää salasanaasi kerran."
 
 #, kde-format
 msgid "The first change asks for your password once."
 msgstr "Ensimmäinen muutos pyytää salasanaasi kerran."
+
+#, kde-format
+msgid "If the battery is already above the limit, it will not charge again until it drops below it."
+msgstr "Jos akun varaus ylittää jo rajan, lataus jatkuu vasta varauksen laskettua sen alle."
 
 #, kde-format
 msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
@@ -94,5 +114,9 @@ msgid "Could not change the charge limit."
 msgstr "Latausrajan muuttaminen epäonnistui."
 
 #, kde-format
-msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
-msgstr "Vaihda akun latausrajaa yhdellä napsautuksella: 50, 80, 90 tai 100 %"
+msgid "Protect battery health with charge limits and battery conservation"
+msgstr "Suojaa akun kuntoa latausrajoilla ja akun suojaustilalla"
+
+#, kde-format
+#~ msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+#~ msgstr "Vaihda akun latausrajaa yhdellä napsautuksella: 50, 80, 90 tai 100 %"

@@ -26,21 +26,27 @@ PlasmoidItem {
     readonly property string bundledHelper: decodeURIComponent(Qt.resolvedUrl("../scripts/chargelimit-helper").toString().replace(/^file:\/\//, ""))
 
     property bool loaded: false
-    property int limit: 0 // 0 when there is no battery with a charge limit
+    property string control: "" // "threshold", "conservation" or unsupported
+    readonly property bool conservationOnly: control === "conservation"
+    readonly property bool supported: conservationOnly || (control === "threshold" && limit > 0)
+    property bool conserving: false
+    property int limit: 0 // only meaningful for adjustable thresholds
     property int capacity: 0
     property string batteryState: ""
     property string helperState: "setup" // "ready", "setup" or "outdated"
-    property int pending: 0 // the limit being applied
+    property var pending: 0 // the percentage or conservation/full target being applied
     property string error: ""
 
     property var callbacks: ({})
     property int commandCount: 0
 
-    Plasmoid.icon: limit ? `battery-${String(Math.round(limit / 10) * 10).padStart(3, "0")}` : "battery-missing"
+    Plasmoid.icon: conservationOnly ? "battery" : limit ? `battery-${String(Math.round(limit / 10) * 10).padStart(3, "0")}` : "battery-missing"
     // Passive keeps it behind the system tray arrow; hidden completely without a battery.
-    Plasmoid.status: limit ? PlasmaCore.Types.PassiveStatus : PlasmaCore.Types.HiddenStatus
+    Plasmoid.status: supported ? PlasmaCore.Types.PassiveStatus : PlasmaCore.Types.HiddenStatus
     toolTipMainText: i18n("Charge Limit")
-    toolTipSubText: limit ? i18n("Stops charging at %1%", limit) : i18n("No battery with a charge limit found")
+    toolTipSubText: conservationOnly
+        ? (conserving ? i18n("Battery conservation is on") : i18n("Stops charging at %1%", 100))
+        : limit ? i18n("Stops charging at %1%", limit) : i18n("No battery with a charge limit found")
 
     switchWidth: Kirigami.Units.gridUnit * 12
     switchHeight: Kirigami.Units.gridUnit * 6
@@ -64,8 +70,9 @@ PlasmoidItem {
         WorkspaceComponents.BadgeOverlay {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            visible: root.limit > 0
-            text: i18nc("charge limit on the panel icon", "%1%", root.limit)
+            visible: root.supported
+            text: root.conservationOnly && root.conserving ? "✓"
+                : i18nc("charge limit on the panel icon", "%1%", root.conservationOnly ? 100 : root.limit)
             icon: icon
         }
     }
@@ -77,18 +84,18 @@ PlasmoidItem {
 
         PlasmaExtras.PlaceholderMessage {
             Layout.fillWidth: true
-            visible: root.loaded && !root.limit
+            visible: root.loaded && !root.supported
             iconName: "battery-missing"
             text: i18n("No battery with a charge limit found")
         }
 
         RowLayout {
             Layout.fillWidth: true
-            visible: root.limit > 0
+            visible: root.supported
 
             PlasmaComponents3.Label {
                 Layout.fillWidth: true
-                text: i18n("Stop charging at")
+                text: root.conservationOnly ? i18n("Charge Limit") : i18n("Stop charging at")
                 wrapMode: Text.Wrap
             }
 
@@ -107,7 +114,7 @@ PlasmoidItem {
 
         RowLayout {
             Layout.fillWidth: true
-            visible: root.limit > 0
+            visible: root.control === "threshold" && root.limit > 0
 
             Repeater {
                 model: root.presets
@@ -125,9 +132,37 @@ PlasmoidItem {
             }
         }
 
+        RowLayout {
+            Layout.fillWidth: true
+            visible: root.conservationOnly
+
+            PlasmaComponents3.Button {
+                Layout.fillWidth: true
+                text: i18n("Battery conservation")
+                checked: root.conserving
+                enabled: !root.pending
+                onClicked: root.setLimit("conservation")
+            }
+
+            PlasmaComponents3.Button {
+                Layout.fillWidth: true
+                text: i18n("Full charge")
+                checked: !root.conserving
+                enabled: !root.pending
+                onClicked: root.setLimit("full")
+            }
+        }
+
         PlasmaComponents3.Label {
             Layout.fillWidth: true
-            visible: root.limit > 0
+            visible: root.conservationOnly
+            text: i18n("This laptop sets its own reduced charge limit. Conservation mode helps preserve battery health.")
+            wrapMode: Text.Wrap
+        }
+
+        PlasmaComponents3.Label {
+            Layout.fillWidth: true
+            visible: root.supported
             text: root.batteryStatusText()
             opacity: 0.7
             wrapMode: Text.Wrap
@@ -135,7 +170,7 @@ PlasmoidItem {
 
         PlasmaComponents3.Label {
             Layout.fillWidth: true
-            visible: root.limit > 0 && root.helperState !== "ready" && !root.error
+            visible: root.supported && root.helperState !== "ready" && !root.error
             text: root.helperState === "outdated"
                 ? i18n("This update asks for your password once.")
                 : i18n("The first change asks for your password once.")
@@ -155,7 +190,7 @@ PlasmoidItem {
 
         ColumnLayout {
             Layout.fillWidth: true
-            visible: tipsButton.checked && root.limit > 0
+            visible: tipsButton.checked && root.supported
             spacing: Kirigami.Units.largeSpacing
 
             Kirigami.Separator {
@@ -164,6 +199,7 @@ PlasmoidItem {
 
             Repeater {
                 model: [
+                    i18n("If the battery is already above the limit, it will not charge again until it drops below it."),
                     i18n("If a new limit doesn't take effect, unplug the charger and plug it back in."),
                     i18n("To keep Charge Limit always visible, right-click the system tray arrow, choose <b>Configure System Tray...</b>, and set Charge Limit to <b>Always show</b>."),
                 ]
@@ -243,6 +279,8 @@ PlasmoidItem {
             }
             loaded = true
             limit = parseInt(status.limit) || 0
+            control = status.control || (limit ? "threshold" : "")
+            conserving = status.conservation === "1"
             capacity = parseInt(status.capacity) || 0
             batteryState = status.state || ""
             helperState = status.helper || "setup"
@@ -265,8 +303,8 @@ PlasmoidItem {
                 return
             }
             const command = helperState === "ready"
-                ? `pkexec ${installedHelper} set ${value}`
-                : `pkexec /bin/bash ${quote(bundledHelper)} install ${value}`
+                ? `pkexec ${installedHelper} set ${quote(String(value))}`
+                : `pkexec /bin/bash ${quote(bundledHelper)} install ${quote(String(value))}`
             run(command, (code, stdout, stderr) => {
                 pending = 0
                 if (code === 0) {

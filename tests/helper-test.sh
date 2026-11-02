@@ -11,8 +11,9 @@ fi
 
 script=$(realpath "$(dirname "$0")/../package/contents/scripts/chargelimit-helper")
 sysfs=$(mktemp -d)
-trap 'rm -rf "$sysfs"' EXIT
-export CHARGE_LIMIT_SYSFS=$sysfs
+ideapad=$(mktemp -d)
+trap 'rm -rf "$sysfs" "$ideapad"' EXIT
+export CHARGE_LIMIT_SYSFS=$sysfs CHARGE_LIMIT_IDEAPAD_SYSFS=$ideapad
 failed=0
 
 helper() { bash "$script" "$@"; }
@@ -39,14 +40,14 @@ supply() {
     done
 }
 
-reset() { rm -rf "${sysfs:?}"/*; }
+reset() { rm -rf "${sysfs:?}"/* "${ideapad:?}"/*; }
 
 # A ThinkPad-like laptop with a wireless mouse.
 supply AC Mains online=1
 supply BAT0 Battery capacity=78 status=Charging charge_control_start_threshold=0 charge_control_end_threshold=100
 supply hidpp_battery_0 Battery scope=Device capacity=50 charge_control_end_threshold=100
 
-check "status" "limit=100 capacity=78 state=Charging" "$(helper status | grep -v '^helper=' | paste -sd' ')"
+check "status" "control=threshold limit=100 capacity=78 state=Charging" "$(helper status | grep -v '^helper=' | paste -sd' ')"
 helper set 80
 check "set 80" "75 80" "$(thresholds BAT0)"
 check "status after set 80" "limit=80" "$(helper status | grep '^limit=')"
@@ -63,7 +64,7 @@ for bad in 19 101 080 8 abc "" "80 90" -5; do
 done
 check "rejected values change nothing" "85 90" "$(thresholds BAT0)"
 check "install needs root" "install must run as root" "$(helper install 80 2>&1 || true)"
-check "usage" "Usage: chargelimit-helper status | set LIMIT | install [LIMIT]" "$(helper bogus 2>&1 || true)"
+check "usage" "Usage: chargelimit-helper status | set TARGET | install [TARGET] (20-100, conservation or full)" "$(helper bogus 2>&1 || true)"
 
 # Every battery is set, e.g. ThinkPads with two batteries.
 supply BAT1 Battery capacity=40 status=Charging charge_control_start_threshold=0 charge_control_end_threshold=100
@@ -101,11 +102,55 @@ supply BAT0 Battery charge_control_start_threshold=0 charge_control_end_threshol
 chmod 444 "$sysfs/BAT0/charge_control_end_threshold"
 check "write error" "Could not set charge_control_end_threshold to 80: Permission denied" "$(helper set 80 2>&1 || true)"
 
+# Yoga 720 / IdeaPad: a real battery, but only a firmware conservation switch.
+reset
+supply BAT1 Battery capacity=88 status="Not charging"
+supply hidpp_battery_0 Battery scope=Device capacity=50
+mkdir -p "$ideapad/VPC2004:00"
+conservation=$ideapad/VPC2004:00/conservation_mode
+echo 0 >"$conservation"
+check "Yoga normal status" "control=conservation conservation=0 capacity=88 state=Not charging" "$(helper status | grep -v '^helper=' | paste -sd' ')"
+helper set conservation
+check "Yoga conservation enabled" 1 "$(cat "$conservation")"
+check "Yoga conservation status" "conservation=1" "$(helper status | grep '^conservation=')"
+check "Yoga never invents a percentage" "" "$(helper status | grep '^limit=' || true)"
+helper set full
+check "Yoga full charge" 0 "$(cat "$conservation")"
+check "Yoga rejects arbitrary percentages" "No battery with a charge limit was found" "$(helper set 80 2>&1 || true)"
+check "Yoga rejected percentage changes nothing" 0 "$(cat "$conservation")"
+result=0
+output=$(bash -c 'source "$1" status >/dev/null; write() { :; }; cmd_set conservation' _ "$script" 2>&1) || result=$?
+check "Yoga silently ignored write fails" 1 "$result"
+check "Yoga ignored write error" "The laptop did not apply battery conservation mode" "$output"
+chmod 444 "$conservation"
+check "Yoga write failure" "Could not set conservation_mode to 1: Permission denied" "$(helper set conservation 2>&1 || true)"
+chmod 644 "$conservation"
+echo broken >"$conservation"
+result=0
+output=$(helper status 2>&1) || result=$?
+check "Yoga invalid status fails" 1 "$result"
+check "Yoga invalid status error" "Could not read battery conservation mode" "$(echo "$output" | grep -v '^helper=')"
+check "Yoga invalid status blocks writes" "Could not read battery conservation mode" "$(helper set conservation 2>&1 || true)"
+
+# Prefer adjustable thresholds if the firmware also exposes conservation mode.
+echo 0 >"$conservation"
+echo 80 >"$sysfs/BAT1/charge_control_end_threshold"
+check "thresholds take precedence" "control=threshold" "$(helper status | grep '^control=')"
+helper set 90
+check "adjustable threshold still works" 90 "$(value BAT1/charge_control_end_threshold)"
+check "threshold change leaves conservation alone" 0 "$(cat "$conservation")"
+
+# A platform switch alone must not turn a mouse into the laptop battery.
+rm -rf "$sysfs/BAT1"
+check "conservation without a system battery is unsupported" "" "$(helper status | grep -v '^helper=' || true)"
+check "no system battery blocks conservation" "No battery with conservation mode was found" "$(helper set conservation 2>&1 || true)"
+
 # Desktops: no battery with a charge limit.
 reset
 supply AC Mains online=1
 supply hidpp_battery_0 Battery scope=Device capacity=50
 check "desktop status" "" "$(helper status | grep -v '^helper=' || true)"
 check "desktop set" "No battery with a charge limit was found" "$(helper set 80 2>&1 || true)"
+check "desktop conservation" "No battery with conservation mode was found" "$(helper set conservation 2>&1 || true)"
 
 exit $failed

@@ -19,6 +19,10 @@ msgid "Charge Limit"
 msgstr "충전 한도"
 
 #, kde-format
+msgid "Battery conservation is on"
+msgstr "배터리 보호가 켜져 있습니다"
+
+#, kde-format
 msgid "Stops charging at %1%"
 msgstr "%1%에서 충전을 멈춥니다"
 
@@ -45,12 +49,28 @@ msgid "%1%"
 msgstr "%1%"
 
 #, kde-format
+msgid "Battery conservation"
+msgstr "배터리 보호"
+
+#, kde-format
+msgid "Full charge"
+msgstr "완전 충전"
+
+#, kde-format
+msgid "This laptop sets its own reduced charge limit. Conservation mode helps preserve battery health."
+msgstr "이 노트북은 자체적으로 낮은 충전 한도를 정합니다. 보호 모드는 배터리 수명을 유지하는 데 도움이 됩니다."
+
+#, kde-format
 msgid "This update asks for your password once."
 msgstr "이 업데이트에서는 암호를 한 번만 요청합니다."
 
 #, kde-format
 msgid "The first change asks for your password once."
 msgstr "처음 변경할 때 암호를 한 번만 요청합니다."
+
+#, kde-format
+msgid "If the battery is already above the limit, it will not charge again until it drops below it."
+msgstr "배터리 잔량이 이미 한도를 초과한 경우 한도 아래로 떨어질 때까지 다시 충전하지 않습니다."
 
 #, kde-format
 msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
@@ -94,5 +114,9 @@ msgid "Could not change the charge limit."
 msgstr "충전 한도를 변경할 수 없습니다."
 
 #, kde-format
-msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
-msgstr "한 번의 클릭으로 배터리 충전 한도를 변경합니다: 50, 80, 90 또는 100%"
+msgid "Protect battery health with charge limits and battery conservation"
+msgstr "충전 한도와 배터리 보호 모드로 배터리 수명을 유지하세요"
+
+#, kde-format
+#~ msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+#~ msgstr "한 번의 클릭으로 배터리 충전 한도를 변경합니다: 50, 80, 90 또는 100%"

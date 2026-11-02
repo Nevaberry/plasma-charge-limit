@@ -19,6 +19,10 @@ msgid "Charge Limit"
 msgstr "Предел заряда"
 
 #, kde-format
+msgid "Battery conservation is on"
+msgstr "Режим сохранения аккумулятора включён"
+
+#, kde-format
 msgid "Stops charging at %1%"
 msgstr "Прекращает зарядку при %1%"
 
@@ -45,12 +49,28 @@ msgid "%1%"
 msgstr "%1%"
 
 #, kde-format
+msgid "Battery conservation"
+msgstr "Сохранение аккумулятора"
+
+#, kde-format
+msgid "Full charge"
+msgstr "Полная зарядка"
+
+#, kde-format
+msgid "This laptop sets its own reduced charge limit. Conservation mode helps preserve battery health."
+msgstr "Этот ноутбук сам определяет пониженный предел заряда. Режим сохранения помогает продлить срок службы аккумулятора."
+
+#, kde-format
 msgid "This update asks for your password once."
 msgstr "После этого обновления потребуется ввести пароль один раз."
 
 #, kde-format
 msgid "The first change asks for your password once."
 msgstr "При первом изменении потребуется ввести пароль один раз."
+
+#, kde-format
+msgid "If the battery is already above the limit, it will not charge again until it drops below it."
+msgstr "Если заряд аккумулятора уже выше предела, зарядка возобновится только после снижения ниже него."
 
 #, kde-format
 msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
@@ -94,5 +114,9 @@ msgid "Could not change the charge limit."
 msgstr "Не удалось изменить предел заряда."
 
 #, kde-format
-msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
-msgstr "Меняйте предел заряда батареи одним щелчком: 50, 80, 90 или 100%"
+msgid "Protect battery health with charge limits and battery conservation"
+msgstr "Продлите срок службы аккумулятора с помощью пределов заряда и режима сохранения"
+
+#, kde-format
+#~ msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+#~ msgstr "Меняйте предел заряда батареи одним щелчком: 50, 80, 90 или 100%"

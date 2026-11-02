@@ -61,6 +61,22 @@ function widget(t, helperState) {
 }
 
 for (const state of ['setup', 'outdated', 'ready']) {
+    for (const target of ['conservation', 'full']) {
+        test(`${state}: Yoga ${target} uses the normal authorization flow`, t => {
+            const app = widget(t, state);
+            app.installPkexec();
+            app.context.setLimit(target);
+            assert.equal(app.context.pending, target);
+            app.drain();
+            assert.deepEqual(app.args, state === 'ready'
+                ? [app.context.installedHelper, 'set', target]
+                : ['/bin/bash', app.context.bundledHelper, 'install', target]);
+            assert.equal(app.context.pending, 0);
+            assert.equal(app.context.error, '');
+            assert.equal(app.refreshes, 1);
+        });
+    }
+
     test(`${state}: missing pkexec shows instructions and recovers after installation`, t => {
         const app = widget(t, state);
         app.context.setLimit(80);
@@ -101,3 +117,38 @@ for (const state of ['setup', 'outdated', 'ready']) {
         });
     }
 }
+
+test('status distinguishes conservation mode, adjustable thresholds and unsupported batteries', () => {
+    const refresh = qml.match(/^    function refresh\([^]*?^    }/m)[0];
+    let status = 'helper=ready\ncontrol=conservation\nconservation=1\ncapacity=88\nstate=Not charging';
+    const context = vm.createContext({
+        bundledHelper: '/tmp/chargelimit-helper',
+        loaded: false, limit: 0, control: '', conserving: false,
+        capacity: 0, batteryState: '', helperState: 'setup', error: '',
+        i18n: text => text,
+        run: (command, done) => done(0, status, ''),
+    });
+    vm.runInContext(functions + '\n' + refresh, context);
+    context.refresh();
+    assert.equal(context.control, 'conservation');
+    assert.equal(context.conserving, true);
+    assert.equal(context.limit, 0, 'must not invent a firmware percentage');
+    assert.equal(context.capacity, 88);
+    assert.equal(context.batteryState, 'Not charging');
+
+    status = status.replace('conservation=1', 'conservation=0');
+    context.refresh();
+    assert.equal(context.control, 'conservation', 'full charge still exposes both controls');
+    assert.equal(context.conserving, false);
+
+    status = 'helper=ready\ncontrol=threshold\nlimit=80\ncapacity=79\nstate=Charging';
+    context.refresh();
+    assert.equal(context.control, 'threshold');
+    assert.equal(context.limit, 80);
+
+    status = 'helper=setup';
+    context.refresh();
+    assert.equal(context.control, '');
+    assert.equal(context.conserving, false);
+    assert.equal(context.limit, 0);
+});

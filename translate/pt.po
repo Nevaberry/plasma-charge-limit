@@ -19,6 +19,10 @@ msgid "Charge Limit"
 msgstr "Limite de carga"
 
 #, kde-format
+msgid "Battery conservation is on"
+msgstr "A conservação da bateria está ativada"
+
+#, kde-format
 msgid "Stops charging at %1%"
 msgstr "Para o carregamento aos %1%"
 
@@ -45,12 +49,28 @@ msgid "%1%"
 msgstr "%1%"
 
 #, kde-format
+msgid "Battery conservation"
+msgstr "Conservar bateria"
+
+#, kde-format
+msgid "Full charge"
+msgstr "Carga completa"
+
+#, kde-format
+msgid "This laptop sets its own reduced charge limit. Conservation mode helps preserve battery health."
+msgstr "Este portátil define o seu próprio limite de carga reduzido. O modo de conservação ajuda a preservar a saúde da bateria."
+
+#, kde-format
 msgid "This update asks for your password once."
 msgstr "Esta atualização pede a sua palavra-passe uma única vez."
 
 #, kde-format
 msgid "The first change asks for your password once."
 msgstr "A primeira alteração pede a sua palavra-passe uma única vez."
+
+#, kde-format
+msgid "If the battery is already above the limit, it will not charge again until it drops below it."
+msgstr "Se a bateria já estiver acima do limite, só voltará a carregar quando descer abaixo dele."
 
 #, kde-format
 msgid "If a new limit doesn't take effect, unplug the charger and plug it back in."
@@ -94,5 +114,9 @@ msgid "Could not change the charge limit."
 msgstr "Não foi possível alterar o limite de carga."
 
 #, kde-format
-msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
-msgstr "Altere o limite de carga da bateria com um clique: 50, 80, 90 ou 100%"
+msgid "Protect battery health with charge limits and battery conservation"
+msgstr "Proteja a saúde da bateria com limites de carga e o modo de conservação"
+
+#, kde-format
+#~ msgid "Switch the battery charge limit with one click: 50, 80, 90 or 100%"
+#~ msgstr "Altere o limite de carga da bateria com um clique: 50, 80, 90 ou 100%"
